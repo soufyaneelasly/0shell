@@ -1,31 +1,15 @@
 use std::io::Write;
-
+mod commands;
 
 
 fn main() {
-    println!("Hello, world!");
     loup_main()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 pub fn loup_main() {
     loop {
     print!("$ ");
     std::io::stdout().flush().unwrap();
-    println!("hhhh{:?}",std::io::stdout().flush().unwrap());
 
     let mut input = String::new();
     if std::io::stdin().read_line(&mut input).is_err() {
@@ -36,12 +20,12 @@ pub fn loup_main() {
     if parts.is_empty() { continue; }
 
     let cmd = parts[0];
-    //let args = &parts[1..];
-    println!("{}",cmd);
+    let args = &parts[1..];
 
     match cmd {
-        "ls" => cmd_ls(cmd),
-        "cat" => cmd_cat(cmd),
+        "ls" =>   commands::cmd_ls(cmd),
+        "cat" =>  commands::cmd_cat(cmd),
+        "mkdir" => commands::cmd_mkdir(&args),
         "exit" => break,
         _ => println!("Command '{}' not found", cmd),
     }
@@ -49,19 +33,8 @@ pub fn loup_main() {
 
 }
 
-fn cmd_ls(s :&str){
-    println!("hhh :{}",s);
-    match s.is_empty() {
-        false=>println!("comande ls"),
-        true=>println!("khawilkhwa")
-    }
-}
 
-fn cmd_cat(s :&str){
-    match s.is_empty() {
-        false=>println!("comande cat"),
-        true=>println!("khawilkhwa")
-    }
-}
+
+
 
 
