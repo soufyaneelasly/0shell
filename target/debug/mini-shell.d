@@ -1,1 +1,1 @@
-/home/aboutamgh/Documents/0shell/target/debug/mini-shell: /home/aboutamgh/Documents/0shell/src/main.rs
+/home/aboutamgh/Desktop/0shell/target/debug/mini-shell: /home/aboutamgh/Desktop/0shell/src/commands/cat.rs /home/aboutamgh/Desktop/0shell/src/commands/ls.rs /home/aboutamgh/Desktop/0shell/src/commands/mkdir.rs /home/aboutamgh/Desktop/0shell/src/commands/mod.rs /home/aboutamgh/Desktop/0shell/src/main.rs
