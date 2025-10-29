@@ -1,6 +1,6 @@
 mod lexer;
 mod parser;
-mod executor; // NEW: Now we're ready!
+mod executor;  
 
 use std::io::{self, Write};
 

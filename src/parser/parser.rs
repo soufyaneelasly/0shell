@@ -67,7 +67,7 @@ impl Parser {
             let operator_kind = self.current().kind.clone();
             
             self.advance(); // Consume it (the operator
-)            
+
             let right = self.parse_pipe()?;
             
             command = match operator_kind {
