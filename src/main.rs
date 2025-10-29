@@ -1,6 +1,6 @@
 mod lexer;
 mod parser;
-mod executor;  
+mod executor;
 
 use std::io::{self, Write};
 
@@ -61,26 +61,11 @@ fn process_command(input: &str, exec: &mut executor::Executor) {
     let lexer = lexer::Lexer::new(input);
     match lexer.lex() {
         Ok(tokens) => {
-            // Debug: show tokens (comment out in production)
-            if cfg!(debug_assertions) {
-                println!("[DEBUG] Tokens:");
-                for token in &tokens {
-                    if !matches!(token.kind, lexer::TokenKind::Eof) {
-                        println!("  {:?}", token);
-                    }
-                }
-            }
-            
             // Parse the tokens into AST
             let mut parser = parser::Parser::new(tokens);
             match parser.parse() {
                 Ok(ast) => {
-                    // Debug: show AST (comment out in production)
-                    if cfg!(debug_assertions) {
-                        println!("[DEBUG] AST: {:?}", ast);
-                    }
-                    
-                    // NEW: Execute the command!
+                    // Execute the command!
                     match exec.execute(&ast) {
                         Ok(result) => {
                             // Handle execution result
@@ -126,4 +111,24 @@ fn show_help() {
     println!();
     println!("All core Unix commands are now implemented!");
 }
- 
+
+// Optional: Add some integration tests
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_empty_input() {
+        let mut exec = executor::Executor::new();
+        process_command("", &mut exec); // Should not panic
+        process_command("   ", &mut exec); // Should not panic
+    }
+
+    #[test] 
+    fn test_builtin_commands() {
+        let mut exec = executor::Executor::new();
+        // These should be handled without parsing
+        process_command("exit", &mut exec);
+        process_command("help", &mut exec);
+    }
+}

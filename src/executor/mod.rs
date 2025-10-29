@@ -41,7 +41,7 @@ impl Executor {
     }
 
     fn execute_pipe(&mut self, _pipe_cmd: &crate::parser::PipeCommand) -> Result<ExecutionResult, ExecutorError> {
-        // For now, just return a message - we'll implement pipes later
+        //  For now, just return a message -  i will  implement pipes tomorrow readit it  tomorow 
         Ok(ExecutionResult {
             output: "Pipes not yet implemented\n".to_string(),
             success: false,
@@ -50,7 +50,7 @@ impl Executor {
     }
 
     fn execute_redirect(&mut self, redirect_cmd: &crate::parser::RedirectCommand) -> Result<ExecutionResult, ExecutorError> {
-        // For now, just execute the command - we'll implement redirection later
+        // For now, just execute the command - we'll implement redirection tomorrow readit it  tomorow
         self.execute(&redirect_cmd.command)
     }
 
@@ -101,3 +101,6 @@ impl Default for Executor {
         Self::new()
     }
 }
+
+
+ 
