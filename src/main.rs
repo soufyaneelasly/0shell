@@ -27,6 +27,7 @@ pub fn loup_main() {
         "cat" =>  commands::cmd_cat(&args),
         "mkdir" => commands::cmd_mkdir(&args),
         "mv"=>commands::cmd_mv(&args),
+        "rm"=>commands::cmd_rm(&args),
         "exit" => break,
         _ => println!("Command '{}' not found", cmd),
     }
