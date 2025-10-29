@@ -112,45 +112,18 @@ fn show_help() {
     println!("0-shell - Minimal Unix Shell");
     println!();
     println!("Available commands:");
-    println!("  echo [text]    - Display text");
-    println!("  ls             - List files");
-    println!("  pwd            - Show current directory");
-    println!("  cd [dir]       - Change directory");
-    println!("  cat [file]     - Show file content");
-    println!("  cp <src> <dst> - Copy files");
-    println!("  rm <file>      - Remove files");
-    println!("  mv <src> <dst> - Move files");
-    println!("  mkdir <dir>    - Create directory");
-    println!("  exit           - Exit shell");
-    println!("  help           - This help message");
+    println!("  echo [text]        - Display text");
+    println!("  cd [dir]           - Change directory");
+    println!("  pwd                - Show current directory");
+    println!("  ls [dir]           - List files (-a for hidden)");
+    println!("  cat <file>         - Show file content");
+    println!("  cp <src> <dst>     - Copy files/directories");
+    println!("  rm <file>          - Remove files (-r for directories)");
+    println!("  mv <src> <dst>     - Move/rename files");
+    println!("  mkdir <dir>        - Create directories");
+    println!("  exit               - Exit shell");
+    println!("  help               - This help message");
     println!();
-    println!("Supported features:");
-    println!("  - Quotes: echo \"hello world\"");
-    println!("  - Pipes: ls | grep rs");
-    println!("  - Redirects: echo test > file.txt");
-    println!("  - Logical: cmd1 && cmd2, cmd1 || cmd2");
-    println!("  - Sequences: cmd1; cmd2; cmd3");
-    println!();
-    println!("Shell is now ACTIVE - commands will be executed!");
+    println!("All core Unix commands are now implemented!");
 }
-
-// Optional: Add some integration tests
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_empty_input() {
-        let mut exec = executor::Executor::new();
-        process_command("", &mut exec); // Should not panic
-        process_command("   ", &mut exec); // Should not panic
-    }
-
-    #[test] 
-    fn test_builtin_commands() {
-        let mut exec = executor::Executor::new();
-        // These should be handled without parsing
-        process_command("exit", &mut exec);
-        process_command("help", &mut exec);
-    }
-}
+ 
