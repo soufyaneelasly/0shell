@@ -12,7 +12,7 @@ pub fn execute(args: &[String]) -> Result<ExecutionResult, ExecutorError> {
     let source = &args[0];
     let destination = &args[1];
     
-    // Check if source exists
+    // Check if source    exists 
     if !Path::new(source).exists() {
         return Err(ExecutorError::IoError(
             std::io::Error::new(std::io::ErrorKind::NotFound, 
@@ -33,7 +33,7 @@ pub fn execute(args: &[String]) -> Result<ExecutionResult, ExecutorError> {
     Ok(ExecutionResult::default())
 }
 
-// Helper function for recursive directory copy
+// Helper function for recursive directory    copy
 fn copy_dir_all(src: &str, dst: &str) -> Result<(), std::io::Error> {
     fs::create_dir_all(dst)?;
     
