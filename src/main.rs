@@ -23,7 +23,7 @@ pub fn loup_main() {
     let args = &parts[1..];
 
     match cmd {
-        "ls" =>   commands::cmd_ls(cmd),
+        "ls" =>   commands::cmd_ls(&args),
         "cat" =>  commands::cmd_cat(&args),
         "mkdir" => commands::cmd_mkdir(&args),
         "mv"=>commands::cmd_mv(&args),
