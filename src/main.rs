@@ -28,6 +28,9 @@ pub fn loup_main() {
         "mkdir" => commands::cmd_mkdir(&args),
         "mv"=>commands::cmd_mv(&args),
         "rm"=>commands::cmd_rm(&args),
+        "echo"=>commands::cmd_echo(&args),
+        "cd"=>commands::cmd_cd(&args),
+        "pwd"=>commands::cmd_pwd(),
         "exit" => break,
         _ => println!("Command '{}' not found", cmd),
     }
