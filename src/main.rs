@@ -1,7 +1,6 @@
 mod lexer;
 mod parser;
-// mod executor; // Coming soon!
-// this main just for testing my parser and lexer 
+mod executor; // NEW: Now we're ready!
 
 use std::io::{self, Write};
 
@@ -9,14 +8,17 @@ fn main() {
     println!("0-shell v0.1.0");
     println!("Type 'exit' to quit, 'help' for commands");
     
-    run_shell_loop();
+    // Initialize executor with shell state
+    let mut exec = executor::Executor::new();
+    
+    run_shell_loop(&mut exec);
 }
 
-fn run_shell_loop() {
+fn run_shell_loop(exec: &mut executor::Executor) {
     loop {
         // Display prompt and read input
         print!("$ ");
-        io::stdout().flush().unwrap(); // Important: flush the prompt
+        io::stdout().flush().unwrap();
         
         let mut input = String::new();
         match io::stdin().read_line(&mut input) {
@@ -27,7 +29,7 @@ fn run_shell_loop() {
             }
             Ok(_) => {
                 // Process the input
-                process_command(input.trim());
+                process_command(input.trim(), exec);
             }
             Err(error) => {
                 eprintln!("Error reading input: {}", error);
@@ -36,7 +38,7 @@ fn run_shell_loop() {
     }
 }
 
-fn process_command(input: &str) {
+fn process_command(input: &str, exec: &mut executor::Executor) {
     // Skip empty inputs and whitespace-only inputs
     if input.trim().is_empty() {
         return;
@@ -59,7 +61,7 @@ fn process_command(input: &str) {
     let lexer = lexer::Lexer::new(input);
     match lexer.lex() {
         Ok(tokens) => {
-            // Debug: show tokens (you can comment this out later)
+            // Debug: show tokens (comment out in production)
             if cfg!(debug_assertions) {
                 println!("[DEBUG] Tokens:");
                 for token in &tokens {
@@ -73,16 +75,27 @@ fn process_command(input: &str) {
             let mut parser = parser::Parser::new(tokens);
             match parser.parse() {
                 Ok(ast) => {
-                    // Debug: show AST (you can comment this out later)
+                    // Debug: show AST (comment out in production)
                     if cfg!(debug_assertions) {
                         println!("[DEBUG] AST: {:?}", ast);
                     }
                     
-                    // TODO: Add command execution here  
-                    // executor::execute(ast).unwrap_or_else(|e| eprintln!("Error: {}", e));
-                    
-                    // Temporary: Show what we parsed
-                    show_parsed_command(&ast);
+                    // NEW: Execute the command!
+                    match exec.execute(&ast) {
+                        Ok(result) => {
+                            // Handle execution result
+                            if !result.output.is_empty() {
+                                print!("{}", result.output);
+                            }
+                            if result.should_exit {
+                                println!("Goodbye!");
+                                std::process::exit(0);
+                            }
+                        }
+                        Err(err) => {
+                            eprintln!("Execution error: {}", err);
+                        }
+                    }
                 }
                 Err(err) => {
                     eprintln!("Parse error: {}", err);
@@ -95,54 +108,6 @@ fn process_command(input: &str) {
     }
 }
 
-/// Temporary function to demonstrate parsing results
-fn show_parsed_command(command: &parser::Command) {
-    match command {
-        parser::Command::Simple(cmd) => {
-            println!("Simple command: {}", cmd.args.join(" "));
-        }
-        parser::Command::Pipe(pipe_cmd) => {
-            println!("Pipe command: left | right");
-            // You could recursively show the structure here
-        }
-        parser::Command::Redirect(redirect_cmd) => {
-            let op = match redirect_cmd.operator {
-                parser::RedirectOp::Output => ">",
-                parser::RedirectOp::Input => "<", 
-                parser::RedirectOp::Append => ">>",
-            };
-            println!("Redirect command: {} {} {}", 
-                     format_command(&redirect_cmd.command), op, redirect_cmd.filename);
-        }
-        parser::Command::And(and_cmd) => {
-            println!("And command: {} && {}", 
-                     format_command(&and_cmd.left), format_command(&and_cmd.right));
-        }
-        parser::Command::Or(or_cmd) => {
-            println!("Or command: {} || {}", 
-                     format_command(&or_cmd.left), format_command(&or_cmd.right));
-        }
-        parser::Command::Sequence(seq_cmd) => {
-            println!("Sequence command: {} commands", seq_cmd.commands.len());
-            for (i, cmd) in seq_cmd.commands.iter().enumerate() {
-                println!("  {}. {}", i + 1, format_command(cmd));
-            }
-        }
-    }
-}
-
-/// Helper to format any command for display
-fn format_command(command: &parser::Command) -> String {
-    match command {
-        parser::Command::Simple(cmd) => cmd.args.join(" "),
-        parser::Command::Pipe(_) => "(pipe)".to_string(),
-        parser::Command::Redirect(_) => "(redirect)".to_string(),
-        parser::Command::And(_) => "(and)".to_string(),
-        parser::Command::Or(_) => "(or)".to_string(),
-        parser::Command::Sequence(_) => "(sequence)".to_string(),
-    }
-}
-
 fn show_help() {
     println!("0-shell - Minimal Unix Shell");
     println!();
@@ -152,6 +117,10 @@ fn show_help() {
     println!("  pwd            - Show current directory");
     println!("  cd [dir]       - Change directory");
     println!("  cat [file]     - Show file content");
+    println!("  cp <src> <dst> - Copy files");
+    println!("  rm <file>      - Remove files");
+    println!("  mv <src> <dst> - Move files");
+    println!("  mkdir <dir>    - Create directory");
     println!("  exit           - Exit shell");
     println!("  help           - This help message");
     println!();
@@ -162,7 +131,7 @@ fn show_help() {
     println!("  - Logical: cmd1 && cmd2, cmd1 || cmd2");
     println!("  - Sequences: cmd1; cmd2; cmd3");
     println!();
-    println!("Parser is active - commands will be parsed but not executed yet.");
+    println!("Shell is now ACTIVE - commands will be executed!");
 }
 
 // Optional: Add some integration tests
@@ -172,14 +141,16 @@ mod tests {
 
     #[test]
     fn test_empty_input() {
-        process_command(""); // Should not panic
-        process_command("   "); // Should not panic
+        let mut exec = executor::Executor::new();
+        process_command("", &mut exec); // Should not panic
+        process_command("   ", &mut exec); // Should not panic
     }
 
     #[test] 
     fn test_builtin_commands() {
+        let mut exec = executor::Executor::new();
         // These should be handled without parsing
-        process_command("exit");
-        process_command("help");
+        process_command("exit", &mut exec);
+        process_command("help", &mut exec);
     }
 }
