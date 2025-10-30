@@ -7,44 +7,69 @@ use std::io::{self, Write};
 fn main() {
     println!("0-shell v0.1.0");
     println!("Type 'exit' to quit, 'help' for commands");
-    
-    // Initialize executor with shell state
+
     let mut exec = executor::Executor::new();
-    
     run_shell_loop(&mut exec);
 }
 
 fn run_shell_loop(exec: &mut executor::Executor) {
     loop {
-        // Display prompt and read input
+        // Afficher l’invite principale
         print!("$ ");
         io::stdout().flush().unwrap();
-        
+
         let mut input = String::new();
-        match io::stdin().read_line(&mut input) {
-            Ok(0) => {
-                // Ctrl+D was pressed
-                println!("\nGoodbye!");
-                break;
-            }
-            Ok(_) => {
-                // Process the input
-                process_command(input.trim(), exec);
-            }
-            Err(error) => {
-                eprintln!("Error reading input: {}", error);
+        let mut current_quote: Option<char> = None; // ← on garde le type de quote ouverte
+
+        loop {
+            let mut line = String::new();
+            match io::stdin().read_line(&mut line) {
+                Ok(0) => {
+                    println!("\nGoodbye!");
+                    return;
+                }
+                Ok(_) => {
+                    for c in line.chars() {
+                        match c {
+                            // Si on ouvre une quote alors qu’il n’y en avait pas
+                            '\'' | '"' if current_quote.is_none() => {
+                                current_quote = Some(c);
+                            }
+                            // Si on ferme la même quote qu’on avait ouverte
+                            '\'' | '"' if current_quote == Some(c) => {
+                                current_quote = None;
+                            }
+                            _ => {}
+                        }
+                    }
+
+                    input.push_str(&line);
+
+                    // Si aucune quote n’est ouverte → on exécute la commande
+                    if current_quote.is_none() {
+                        break;
+                    } else {
+                        // Invite secondaire pendant le multiline
+                        print!("> ");
+                        io::stdout().flush().unwrap();
+                    }
+                }
+                Err(error) => {
+                    eprintln!("Error reading input: {}", error);
+                    return;
+                }
             }
         }
+
+        process_command(input.trim_end(), exec);
     }
 }
 
 fn process_command(input: &str, exec: &mut executor::Executor) {
-    // Skip empty inputs and whitespace-only inputs
     if input.trim().is_empty() {
         return;
     }
-    
-    // Handle built-in commands that don't need parsing
+
     match input {
         "exit" => {
             println!("Goodbye!");
@@ -54,48 +79,35 @@ fn process_command(input: &str, exec: &mut executor::Executor) {
             show_help();
             return;
         }
-        _ => {} // Continue to lexing/parsing
+        _ => {}
     }
-    
-    // Lex the input
+
     let lexer = lexer::Lexer::new(input);
     match lexer.lex() {
         Ok(tokens) => {
-            // Parse the tokens into AST
             let mut parser = parser::Parser::new(tokens);
             match parser.parse() {
-                Ok(ast) => {
-                    // Execute the command!
-                    match exec.execute(&ast) {
-                        Ok(result) => {
-                            // Handle execution result
-                            if !result.output.is_empty() {
-                                print!("{}", result.output);
-                            }
-                            if result.should_exit {
-                                println!("Goodbye!");
-                                std::process::exit(0);
-                            }
+                Ok(ast) => match exec.execute(&ast) {
+                    Ok(result) => {
+                        if !result.output.is_empty() {
+                            print!("{}", result.output);
                         }
-                        Err(err) => {
-                            eprintln!("Execution error: {}", err);
+                        if result.should_exit {
+                            println!("Goodbye!");
+                            std::process::exit(0);
                         }
                     }
-                }
-                Err(err) => {
-                    eprintln!("Parse error: {}", err);
-                }
+                    Err(err) => eprintln!("Execution error: {}", err),
+                },
+                Err(err) => eprintln!("Parse error: {}", err),
             }
         }
-        Err(err) => {
-            eprintln!("Lex error: {:?}", err);
-        }
+        Err(err) => eprintln!("Lex error: {:?}", err),
     }
 }
 
 fn show_help() {
-    println!("0-shell - Minimal Unix Shell");
-    println!();
+    println!("0-shell - Minimal Unix Shell\n");
     println!("Available commands:");
     println!("  echo [text]        - Display text");
     println!("  cd [dir]           - Change directory");
@@ -107,10 +119,10 @@ fn show_help() {
     println!("  mv <src> <dst>     - Move/rename files");
     println!("  mkdir <dir>        - Create directories");
     println!("  exit               - Exit shell");
-    println!("  help               - This help message");
-    println!();
+    println!("  help               - This help message\n");
     println!("All core Unix commands are now implemented!");
 }
+
 
 // Optional: Add some integration tests
 #[cfg(test)]

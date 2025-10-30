@@ -24,7 +24,7 @@ fn run_ls(args: &[String]) -> Result<(), String> {
     let mut long_format = false; // -l
     let mut append_types = false; // -F
 
-    // Paths
+    // Paths                                       
     let mut paths = Vec::new();
 
     for arg in args {
@@ -33,6 +33,7 @@ fn run_ls(args: &[String]) -> Result<(), String> {
             paths.push(arg.clone());
         } else if arg.starts_with('-') {
             for ch in arg.chars().skip(1) {
+                println!("ch={}", ch);
                 match ch {
                     'a' => show_all = true,
                     'l' => long_format = true,
@@ -46,6 +47,7 @@ fn run_ls(args: &[String]) -> Result<(), String> {
     }
 
     // when you run ls without giving it any paths.
+    //ls tout seul 
     if paths.is_empty() {
         paths.push(
             env::current_dir()
@@ -70,17 +72,18 @@ fn run_ls(args: &[String]) -> Result<(), String> {
         // Use symlink_metadata to decide what the path really is
         let meta = fs::symlink_metadata(&path)
             .map_err(|e| format!("ls: cannot access '{}': {}", path.display(), e))?;
+        //println!("meta file type: {:?}", meta);
 
         // For long format, always show the file/symlink info itself
         // For short format, follow symlinks to directories
-        let is_directory = if long_format {
+        let is_directory = if long_format {            //ls -l
             // In long format, don't follow symlinks - show the symlink itself
-            meta.is_dir() && !meta.file_type().is_symlink()
-        } else {
+            meta.is_dir() && !meta.file_type().is_symlink()  //dossier normal
+        } else { //ls simple
             // In short format, follow symlinks to directories
             if meta.file_type().is_symlink() {
                 match fs::metadata(&path) {
-                    Ok(target_meta) => target_meta.is_dir(),
+                    Ok(target_meta) => target_meta.is_dir(),  // return true si simlink point vers un dossier
                     Err(_) => false, // Broken symlink
                 }
             } else {
@@ -117,6 +120,8 @@ fn run_ls(args: &[String]) -> Result<(), String> {
 
     Ok(())
 }
+
+////////////////////////////////////////////////////////////// ls -l ////////////////////////////////////////////////////////////////
 
 fn print_short_format(
     entries: &[fs::DirEntry],
@@ -193,7 +198,7 @@ fn print_long_format(
     let mut display_entries = Vec::new();
 
     // Add . and .. if -a flag is set
-    if show_all {
+    if show_all {      //-a est present!!!!
         if let Ok(meta) = fs::symlink_metadata(path) {
             total_blocks += meta.blocks();
             display_entries.push((meta, ".".to_string()));
@@ -572,6 +577,8 @@ fn quote_filename(name: &str) -> String {
         out
     }
 }
+
+//return un path a partir d'une chaine de caractere
 
 fn expand_path(path: &str) -> std::path::PathBuf {
     if path == "~" || path.starts_with("~/") {
