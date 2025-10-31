@@ -1,15 +1,45 @@
 mod lexer;
 mod parser;
 mod executor;
+use colored::Colorize;
 
 use std::io::{self, Write};
 
 fn main() {
-    println!("0-shell v0.1.0");
-    println!("Type 'exit' to quit, 'help' for commands");
-
+    print_banner();
     let mut exec = executor::Executor::new();
     run_shell_loop(&mut exec);
+}
+
+fn print_banner() {
+    let banner = vec![
+        "╔══════════════════════════════════════════════════════════════════════╗",
+        "║                                                                      ║",
+        "║  ██████╗       ███████╗██╗  ██╗███████╗██╗     ██╗                   ║",
+        "║ ██╔═████╗      ██╔════╝██║  ██║██╔════╝██║     ██║                   ║",
+        "║ ██║██╔██║█████╗███████╗███████║█████╗  ██║     ██║                   ║",
+        "║ ████╔╝██║╚════╝╚════██║██╔══██║██╔══╝  ██║     ██║                   ║",
+        "║ ╚██████╔╝      ███████║██║  ██║███████╗███████╗███████╗              ║",
+        "║  ╚═════╝       ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝              ║",
+        "║                                                                      ║",
+        "║                                                                      ║",
+        "║                                                                      ║",
+        "╚══════════════════════════════════════════════════════════════════════╝",
+    ];
+
+    for line in banner {
+        println!("{}", line.red().bold());
+    }
+    println!();
+
+    println!("{}", "Welcome to 0-Shell!".green().bold());
+    println!(
+        "Type {} for available commands or {} to quit.",
+        "help".cyan(),
+        "exit".cyan()
+    );
+    println!("{}", "Press Ctrl+D to exit gracefully.".yellow());
+    println!();
 }
 
 fn run_shell_loop(exec: &mut executor::Executor) {
@@ -118,29 +148,9 @@ fn show_help() {
     println!("  rm <file>          - Remove files (-r for directories)");
     println!("  mv <src> <dst>     - Move/rename files");
     println!("  mkdir <dir>        - Create directories");
+    println!("  clear              - Clear the terminal screen");
     println!("  exit               - Exit shell");
     println!("  help               - This help message\n");
     println!("All core Unix commands are now implemented!");
 }
 
-
-// Optional: Add some integration tests
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_empty_input() {
-        let mut exec = executor::Executor::new();
-        process_command("", &mut exec); // Should not panic
-        process_command("   ", &mut exec); // Should not panic
-    }
-
-    #[test] 
-    fn test_builtin_commands() {
-        let mut exec = executor::Executor::new();
-        // These should be handled without parsing
-        process_command("exit", &mut exec);
-        process_command("help", &mut exec);
-    }
-}

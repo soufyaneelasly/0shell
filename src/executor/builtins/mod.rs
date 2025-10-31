@@ -8,7 +8,7 @@ pub mod cp;
 pub mod rm;     
 pub mod mv;     
 pub mod mkdir; 
-//pub mod clear;
+pub mod clear;
 
 use crate::executor::{Executor, ExecutionResult, ExecutorError};
  
@@ -24,7 +24,7 @@ use crate::executor::{Executor, ExecutionResult, ExecutorError};
     Rm,     
     Mv,     
     Mkdir,  
-    //Clear,
+    Clear,
 }
 
 impl Builtin {
@@ -41,7 +41,7 @@ impl Builtin {
             "rm" => Some(Builtin::Rm),      
             "mv" => Some(Builtin::Mv),      
             "mkdir" => Some(Builtin::Mkdir),
-            //"clear"=>Some(Builtin::Clear),
+            "clear" => Some(Builtin::Clear),
             _ => None,
         }
     }
@@ -58,7 +58,7 @@ impl Builtin {
             Builtin::Rm => rm::execute(args),      
             Builtin::Mv => mv::execute(args),      
             Builtin::Mkdir => mkdir::execute(args),  
-            //Builtin::Clear => clear::execute(args),  
+            Builtin::Clear => clear::execute(args),  
         }
     }
 }
