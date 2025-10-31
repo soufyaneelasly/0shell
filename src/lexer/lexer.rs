@@ -4,6 +4,7 @@ use super::types::{Token, TokenKind, Span};
 #[derive(Debug, PartialEq)]
 pub enum LexerError {
     UnmatchedQuote(Span),
+    #[allow(dead_code)]
     InvalidChar(char, Span),
 }
 

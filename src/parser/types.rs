@@ -64,7 +64,9 @@ pub struct SequenceCommand {
 #[derive(Debug, PartialEq)]
 pub enum ParseError {
     UnexpectedToken(Token, Expected),
+    #[allow(dead_code)]
     UnexpectedEof,
+    #[allow(dead_code)]
     UnmatchedPipe,
     InvalidRedirect,
     EmptyCommand,
@@ -73,7 +75,9 @@ pub enum ParseError {
 /// What the parser expected to find
 #[derive(Debug, PartialEq)]
 pub enum Expected {
+    #[allow(dead_code)]
     Command,
+    #[allow(dead_code)]
     Argument,
     Filename,
     Operator(String),  // "|", ">", "&&", etc.
@@ -82,11 +86,13 @@ pub enum Expected {
 // Helper implementations
 impl Command {
     /// Create a simple command from arguments
+    #[allow(dead_code)]
     pub fn simple(args: Vec<String>) -> Self {
         Command::Simple(SimpleCommand { args })
     }
     
     /// Create a pipe command
+    #[allow(dead_code)]
     pub fn pipe(left: Command, right: Command) -> Self {
         Command::Pipe(PipeCommand {
             left: Box::new(left),
@@ -95,6 +101,7 @@ impl Command {
     }
     
     /// Create a redirect command
+    #[allow(dead_code)]
     pub fn redirect(command: Command, operator: RedirectOp, filename: String) -> Self {
         Command::Redirect(RedirectCommand {
             command: Box::new(command),

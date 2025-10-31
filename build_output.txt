@@ -1,0 +1,74 @@
+warning: unused import: `SimpleCommand`
+  --> src/parser/mod.rs:13:5
+   |
+13 |     SimpleCommand, PipeCommand, RedirectCommand, AndCommand, OrCommand, SequenceCommand
+   |     ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `Write`
+ --> src/executor/builtins/cat.rs:2:30
+  |
+2 | use std::io::{self, BufRead, Write};
+  |                              ^^^^^
+
+warning: unused import: `PathBuf`
+ --> src/executor/builtins/cp.rs:2:23
+  |
+2 | use std::path::{Path, PathBuf};
+  |                       ^^^^^^^
+
+warning: variant `InvalidChar` is never constructed
+ --> src/lexer/lexer.rs:7:5
+  |
+5 | pub enum LexerError {
+  |          ---------- variant in this enum
+6 |     UnmatchedQuote(Span),
+7 |     InvalidChar(char, Span),
+  |     ^^^^^^^^^^^
+  |
+  = note: `LexerError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variants `UnexpectedEof` and `UnmatchedPipe` are never constructed
+  --> src/parser/types.rs:67:5
+   |
+65 | pub enum ParseError {
+   |          ---------- variants in this enum
+66 |     UnexpectedToken(Token, Expected),
+67 |     UnexpectedEof,
+   |     ^^^^^^^^^^^^^
+68 |     UnmatchedPipe,
+   |     ^^^^^^^^^^^^^
+   |
+   = note: `ParseError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: variants `Command` and `Argument` are never constructed
+  --> src/parser/types.rs:76:5
+   |
+75 | pub enum Expected {
+   |          -------- variants in this enum
+76 |     Command,
+   |     ^^^^^^^
+77 |     Argument,
+   |     ^^^^^^^^
+   |
+   = note: `Expected` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: associated functions `simple`, `pipe`, and `redirect` are never used
+  --> src/parser/types.rs:85:12
+   |
+83 | impl Command {
+   | ------------ associated functions in this implementation
+84 |     /// Create a simple command from arguments
+85 |     pub fn simple(args: Vec<String>) -> Self {
+   |            ^^^^^^
+...
+90 |     pub fn pipe(left: Command, right: Command) -> Self {
+   |            ^^^^
+...
+98 |     pub fn redirect(command: Command, operator: RedirectOp, filename: String) -> Self {
+   |            ^^^^^^^^
+
+warning: `zerone_shell` (bin "zerone_shell") generated 7 warnings (run `cargo fix --bin "zerone_shell"` to apply 3 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
