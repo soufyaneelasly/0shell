@@ -33,7 +33,6 @@ fn run_ls(args: &[String]) -> Result<(), String> {
             paths.push(arg.clone());
         } else if arg.starts_with('-') {
             for ch in arg.chars().skip(1) {
-                println!("ch={}", ch);
                 match ch {
                     'a' => show_all = true,
                     'l' => long_format = true,
