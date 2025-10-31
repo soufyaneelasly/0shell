@@ -326,7 +326,7 @@ We welcome contributions! Here's how you can help:
   <tr>
     <td align="center">
       <a href="https://github.com/M-MDI">
-        <img src="https://github.com/M-MDI.png" width="100px;" alt="mmoulabbi"/>
+        <img src="https://github.com/M-MDI.png" width="100px;" alt="M-MDI"/>
         <br />
         <sub><b>mmoulabbi</b></sub>
       </a>
