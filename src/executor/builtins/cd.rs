@@ -13,9 +13,10 @@ pub fn execute(args: &[String], executor: &mut Executor) -> Result<ExecutionResu
 
     // If relative path, make it absolute relative to current directory
     let absolute_path = if target_dir.is_relative() {
-        executor.get_current_dir().join(target_dir)
+        let joined = executor.get_current_dir().join(target_dir);
+        joined.canonicalize().unwrap_or(joined)
     } else {
-        target_dir
+        target_dir.canonicalize().unwrap_or(target_dir)
     };
 
     // Check if directory exists  is actually a directory
