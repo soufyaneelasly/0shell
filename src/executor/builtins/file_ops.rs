@@ -1,1 +1,0 @@
-// cp, rm, mv, mkdir
