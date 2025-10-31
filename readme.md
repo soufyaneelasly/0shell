@@ -326,7 +326,7 @@ We welcome contributions! Here's how you can help:
   <tr>
     <td align="center">
       <a href="https://github.com/M-MDI">
-        <img src="https://github.com/mmoulabbi.png" width="100px;" alt="mmoulabbi"/>
+        <img src="https://github.com/M-MDI.png" width="100px;" alt="mmoulabbi"/>
         <br />
         <sub><b>mmoulabbi</b></sub>
       </a>
@@ -340,7 +340,7 @@ We welcome contributions! Here's how you can help:
     </td>
     <td align="center">
       <a href="https://github.com/soufyaneelasly">
-        <img src="https://github.com/selasly.png" width="100px;" alt="selasly"/>
+        <img src="https://github.com/soufyaneelasly.png" width="100px;" alt="selasly"/>
         <br />
         <sub><b>selasly</b></sub>
       </a>
