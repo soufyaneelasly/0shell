@@ -332,8 +332,8 @@ We welcome contributions! Here's how you can help:
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/aboutamgh">
-        <img src="https://github.com/aboutamgh.png" width="100px;" alt="aboutamgh"/>
+      <a href="https://github.com/BOUTAMGHARINE">
+        <img src="https://github.com/BOUTAMGHARINE.png" width="100px;" alt="BOUTAMGHARINE"/>
         <br />
         <sub><b>aboutamgh</b></sub>
       </a>
